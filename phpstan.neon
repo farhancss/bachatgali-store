@@ -1,0 +1,17 @@
+includes:
+    - vendor/larastan/larastan/extension.neon
+
+parameters:
+    level: 8
+    paths:
+        - app
+        - database
+        - routes
+        - tests
+    excludePaths:
+        - app/Filament/*
+    checkMissingIterableValueType: true
+    treatPhpDocTypesAsCertain: false
+    ignoreErrors:
+        # Eloquent magic that Larastan cannot infer without a full DB connection.
+        - '#Unsafe usage of new static#'

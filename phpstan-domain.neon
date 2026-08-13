@@ -1,0 +1,11 @@
+# Stricter gate for the code that handles money and order state.
+includes:
+    - vendor/larastan/larastan/extension.neon
+
+parameters:
+    level: 9
+    paths:
+        - app/Domain
+    checkUninitializedProperties: true
+    checkMissingIterableValueType: true
+    reportUnmatchedIgnoredErrors: true

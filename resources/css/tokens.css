@@ -1,0 +1,59 @@
+/* ==========================================================================
+   Design tokens — single source of truth for Blade and Vue alike.
+   Lifted from the approved prototype (docs/prototype/storefront.html).
+
+   Rule: the accent colour is reserved for price, discount and the primary
+   buy action. Nothing else may use it. Everything else is neutral.
+   ========================================================================== */
+
+:root {
+    --accent: #f0501e;
+    --accent-d: #d43f11;
+    --accent-soft: rgb(240 80 30 / 10%);
+    --ok: #12854c;
+    --ok-soft: rgb(18 133 76 / 10%);
+
+    --font: -apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Roboto, sans-serif;
+
+    --r-sm: 6px;
+    --r: 10px;
+    --r-lg: 14px;
+    --r-xl: 20px;
+    --r-full: 999px;
+
+    --ease: cubic-bezier(0.22, 1, 0.36, 1);
+    --maxw: 1300px;
+}
+
+:root,
+[data-theme='light'] {
+    --bg: #f2f3f5;
+    --surf: #ffffff;
+    --surf-2: #fafafb;
+    --surf-3: #f4f5f7;
+    --tx: #16171b;
+    --tx-2: #5d616e;
+    --tx-3: #8b8f9c;
+    --bd: #e6e7ec;
+    --bd-2: #d5d7de;
+    --sh: 0 1px 2px rgb(18 20 30 / 5%);
+    --sh-2: 0 8px 26px -10px rgb(18 20 30 / 16%);
+    --scrim: rgb(255 255 255 / 90%);
+    --skel: #ecedf1;
+}
+
+[data-theme='dark'] {
+    --bg: #0d0e11;
+    --surf: #16171b;
+    --surf-2: #1b1d22;
+    --surf-3: #202228;
+    --tx: #f0f1f4;
+    --tx-2: #a0a4b0;
+    --tx-3: #787d8a;
+    --bd: #262931;
+    --bd-2: #343841;
+    --sh: 0 1px 2px rgb(0 0 0 / 40%);
+    --sh-2: 0 8px 26px -12px rgb(0 0 0 / 70%);
+    --scrim: rgb(13 14 17 / 90%);
+    --skel: #1e2026;
+}

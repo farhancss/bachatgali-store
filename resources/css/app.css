@@ -1,0 +1,30 @@
+@import 'tailwindcss';
+@import './tokens.css';
+
+/* Storefront base. Component styles live with their components. */
+@layer base {
+    html {
+        -webkit-text-size-adjust: 100%;
+    }
+
+    body {
+        background: var(--bg);
+        color: var(--tx);
+        font-family: var(--font);
+        transition: background 0.35s var(--ease), color 0.35s var(--ease);
+    }
+
+    ::selection {
+        background: var(--accent);
+        color: #fff;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.001ms !important;
+        transition-duration: 0.001ms !important;
+    }
+}
