@@ -2,7 +2,7 @@
 
 Cash-on-delivery commerce platform for the Pakistani market. Replaces the previous WooCommerce site.
 
-**Laravel 13 · Inertia v2 · Vue 3 · Filament 4 · PostgreSQL 17 · Typesense**
+**Laravel 13 · Inertia v3 · Vue 3 · Filament 4 · PostgreSQL 17 · Typesense**
 
 > **Status: boilerplate.** Phase 0 scaffold — architecture, tooling, quality gates and one worked
 > vertical slice. No business features are implemented yet. See [the roadmap](docs/01-architecture.md#12-delivery-roadmap).

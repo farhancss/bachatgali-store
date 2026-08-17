@@ -29,7 +29,7 @@ function scorer(?RiskWeights $weights = null): ScoreCodRisk
     );
 }
 
-it('scores a returning customer in a low-RTO city as low risk', function () {
+it('scores a returning customer in a low-RTO city as low risk', function (): void {
     $assessment = scorer()->handle(
         orderValue: Money::fromRupees(2_000),
         city: City::Lahore,
@@ -42,7 +42,7 @@ it('scores a returning customer in a low-RTO city as low risk', function () {
         ->and($assessment->band->canDispatch())->toBeTrue();
 });
 
-it('escalates a customer with prior refusals', function (int $refusals, int $expectedScore, RiskBand $expectedBand) {
+it('escalates a customer with prior refusals', function (int $refusals, int $expectedScore, RiskBand $expectedBand): void {
     $assessment = scorer()->handle(
         orderValue: Money::fromRupees(2_000),
         city: City::Lahore,
@@ -53,13 +53,13 @@ it('escalates a customer with prior refusals', function (int $refusals, int $exp
     expect($assessment->score)->toBe($expectedScore)
         ->and($assessment->band)->toBe($expectedBand);
 })->with([
-    'one refusal'    => [1, 25, RiskBand::Low],
-    'two refusals'   => [2, 50, RiskBand::Medium],
+    'one refusal' => [1, 25, RiskBand::Low],
+    'two refusals' => [2, 50, RiskBand::Medium],
     'three refusals' => [3, 60, RiskBand::High],
-    'caps at six'    => [6, 60, RiskBand::High],
+    'caps at six' => [6, 60, RiskBand::High],
 ]);
 
-it('sends a high-risk order to a confirmation call rather than a courier', function () {
+it('sends a high-risk order to a confirmation call rather than a courier', function (): void {
     // First-time buyer, Rs. 14,000 (over half the Rs. 15,000 new-customer
     // ceiling), high-RTO city, vague address: 15 + 20 + 10 + 15 = 60.
     $assessment = scorer()->handle(
@@ -76,7 +76,7 @@ it('sends a high-risk order to a confirmation call rather than a courier', funct
         ->and($assessment->band->canDispatch())->toBeFalse();
 });
 
-it('applies the lower ceiling to first-time customers', function () {
+it('applies the lower ceiling to first-time customers', function (): void {
     // Rs. 9,000 is over half the new-customer ceiling but well under half
     // the returning-customer ceiling, so it only counts as high value once.
     $forNewCustomer = scorer()->handle(
@@ -95,7 +95,7 @@ it('applies the lower ceiling to first-time customers', function () {
         ->and($forReturning->factors['high_order_value'])->toBe(0);
 });
 
-it('records which factors contributed, for the ops queue', function () {
+it('records which factors contributed, for the ops queue', function (): void {
     $assessment = scorer()->handle(
         orderValue: Money::fromRupees(200),
         city: City::Quetta,
@@ -111,7 +111,7 @@ it('records which factors contributed, for the ops queue', function () {
         ->and($assessment->band)->toBe(RiskBand::Low);
 });
 
-it('blocks the worst case and never exceeds a score of 100', function () {
+it('blocks the worst case and never exceeds a score of 100', function (): void {
     $assessment = scorer()->handle(
         orderValue: Money::fromRupees(49_000),
         city: City::Quetta,
@@ -125,7 +125,7 @@ it('blocks the worst case and never exceeds a score of 100', function () {
         ->and($assessment->band->canDispatch())->toBeFalse();
 });
 
-it('honours retuned weights', function () {
+it('honours retuned weights', function (): void {
     $lenient = new RiskWeights(previousRefusals: 10, perRefusal: 5);
 
     $assessment = scorer($lenient)->handle(

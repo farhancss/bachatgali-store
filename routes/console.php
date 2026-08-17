@@ -2,8 +2,6 @@
 
 declare(strict_types=1);
 
-use Illuminate\Support\Facades\Schedule;
-
 /*
 | Scheduled work. Each of these arrives with the phase that needs it —
 | listed now so the operational shape of the system is visible from day one.

@@ -48,7 +48,7 @@ final class FakeCourierGateway implements CourierGateway
             courier: $this->identifier(),
             labelUrl: "https://fake.test/labels/{$cn}.pdf",
             estimatedDelivery: new DateTimeImmutable(
-                sprintf('+%d weekdays', $request->city->deliveryDays())
+                sprintf('+%d weekdays', $request->city->deliveryDays()),
             ),
         );
     }

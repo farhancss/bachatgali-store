@@ -37,7 +37,7 @@ final class DomainServiceProvider extends ServiceProvider
                 // 'postex'   => new PostExGateway(...),   ← phase 4
                 // 'leopards' => new LeopardsGateway(...), ← phase 4
                 default => throw new InvalidArgumentException(
-                    "Unknown courier driver [{$driver}]."
+                    "Unknown courier driver [{$driver}].",
                 ),
             };
         });
@@ -52,15 +52,13 @@ final class DomainServiceProvider extends ServiceProvider
             return RiskWeights::fromArray($weights);
         });
 
-        $this->app->singleton(CodLimits::class, function (): CodLimits {
-            return new CodLimits(
-                maxOrderValue: Money::fromPaisa(
-                    (int) config('bachatgali.cod.max_order_value', 5_000_000)
-                ),
-                maxOrderValueNewCustomer: Money::fromPaisa(
-                    (int) config('bachatgali.cod.max_order_value_new', 1_500_000)
-                ),
-            );
-        });
+        $this->app->singleton(CodLimits::class, fn (): CodLimits => new CodLimits(
+            maxOrderValue: Money::fromPaisa(
+                (int) config('bachatgali.cod.max_order_value', 5_000_000),
+            ),
+            maxOrderValueNewCustomer: Money::fromPaisa(
+                (int) config('bachatgali.cod.max_order_value_new', 1_500_000),
+            ),
+        ));
     }
 }

@@ -2,6 +2,8 @@
 
 declare(strict_types=1);
 
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -17,7 +19,7 @@ use Illuminate\Support\Facades\Route;
 | taxonomy now so the 301 map from WooCommerce can be written against it.
 */
 
-Route::get('/', fn () => view('catalog.home'))->name('home');
+Route::get('/', fn (): Factory|View => view('catalog.home'))->name('home');
 
 // ── Catalog (Blade, cached) ───────────────────────────────────
 // Route::get('/c/{category:slug}',           CategoryController::class)->name('category');

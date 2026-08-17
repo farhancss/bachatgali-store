@@ -3,9 +3,9 @@
 declare(strict_types=1);
 
 use Rector\Config\RectorConfig;
+use Rector\Php55\Rector\String_\StringClassNameToClassConstantRector;
 use Rector\Set\ValueObject\LevelSetList;
 use Rector\Set\ValueObject\SetList;
-use Rector\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromStrictNativeCallRector;
 
 return RectorConfig::configure()
     ->withPaths([
@@ -17,6 +17,13 @@ return RectorConfig::configure()
     ->withSkip([
         __DIR__.'/app/Filament',
         __DIR__.'/bootstrap/cache',
+
+        // Architecture rules are written against namespaces, not classes. Rewriting
+        // them to ::class both imports the very things the rules forbid and stops
+        // namespace-level expectations such as 'App\Domain' from reading uniformly.
+        StringClassNameToClassConstantRector::class => [
+            __DIR__.'/tests/Arch',
+        ],
     ])
     ->withSets([
         LevelSetList::UP_TO_PHP_84,
@@ -24,8 +31,5 @@ return RectorConfig::configure()
         SetList::DEAD_CODE,
         SetList::TYPE_DECLARATION,
         SetList::EARLY_RETURN,
-    ])
-    ->withRules([
-        ReturnTypeFromStrictNativeCallRector::class,
     ])
     ->withImportNames(importShortClasses: false, removeUnusedImports: true);

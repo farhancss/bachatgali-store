@@ -7,5 +7,8 @@ parameters:
     paths:
         - app/Domain
     checkUninitializedProperties: true
-    checkMissingIterableValueType: true
     reportUnmatchedIgnoredErrors: true
+    # Same setting as phpstan.neon: a generic declared in a docblock describes the
+    # supported input, not a guarantee about what the framework will actually hand
+    # us at runtime, so defensive type checks against it are not "always true".
+    treatPhpDocTypesAsCertain: false

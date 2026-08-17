@@ -27,6 +27,33 @@ npm run dev
 | Horizon (phase 3) | http://localhost:8000/horizon |
 | Pulse | http://localhost:8000/pulse |
 
+## Running without Docker
+
+If you already have PostgreSQL 17 and Redis on the host, the containers are
+optional. Create the role and databases once (the second one is what
+`phpunit.xml` points the suite at):
+
+```bash
+createuser bachatgali --createdb --pwprompt
+createdb --owner=bachatgali bachatgali
+createdb --owner=bachatgali bachatgali_test
+```
+
+Then serve the app with the built-in server instead of Octane:
+
+```bash
+php artisan serve & npm run dev
+```
+
+Two host-specific settings to check in `.env`:
+
+- **`REDIS_CLIENT`** — the Docker image ships `ext-redis`, a Homebrew PHP
+  usually does not. Set `REDIS_CLIENT=predis` if `php -m | grep redis` comes
+  back empty; `predis/predis` is installed for exactly this case.
+- **`SCOUT_DRIVER`** — leave it as `typesense` only if Typesense is actually
+  running. Nothing in phase 0 indexes anything, so `SCOUT_DRIVER=null` is fine
+  until phase 2.
+
 **No courier credentials required.** `COURIER_DEFAULT=fake` binds an in-memory gateway that
 behaves like a real courier, including failure modes. The entire test suite uses it.
 

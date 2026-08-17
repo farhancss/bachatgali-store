@@ -27,7 +27,7 @@ pest()->extend(TestCase::class)->use(RefreshDatabase::class)->in('Feature');
 |--------------------------------------------------------------------------
 */
 
-expect()->extend('toBeMoney', function (int $paisa) {
+expect()->extend('toBeMoney', function (int $paisa): object {
     expect($this->value)
         ->toBeInstanceOf(Money::class)
         ->and($this->value->paisa)->toBe($paisa);
@@ -35,7 +35,7 @@ expect()->extend('toBeMoney', function (int $paisa) {
     return $this;
 });
 
-expect()->extend('toBeRiskBand', function (RiskBand $band) {
+expect()->extend('toBeRiskBand', function (RiskBand $band): object {
     expect($this->value->band)->toBe($band);
 
     return $this;

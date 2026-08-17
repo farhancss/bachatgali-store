@@ -38,7 +38,7 @@ final readonly class ScoreCodRisk
         bool $addressLooksIncomplete = false,
     ): RiskAssessment {
         $isHighValue = $orderValue->isGreaterThanOrEqualTo(
-            $this->limits->highValueThresholdFor($isFirstTimeCustomer)
+            $this->limits->highValueThresholdFor($isFirstTimeCustomer),
         );
 
         return RiskAssessment::fromFactors([

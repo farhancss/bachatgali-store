@@ -1,5 +1,5 @@
 # COD Commerce Platform — Architecture & Build Plan
-### Laravel 13 · Inertia v2 · Vue 3 · Filament · PostgreSQL
+### Laravel 13 · Inertia v3 · Vue 3 · Filament · PostgreSQL
 **Replacing WooCommerce · Cash on delivery only · Service-based architecture, tested and statically verified**
 
 > Project: **Bachat Gali** (`bachatgali/store`). Brand strings live in `config/bachatgali.php`.
@@ -217,7 +217,7 @@ Interactive pieces on Blade pages (cart drawer, wishlist toggle, image gallery, 
 | Framework | **Laravel 13** (released Mar 2026, supported to Mar 2028) | Current major, long runway |
 | Runtime | **Laravel Octane + FrankenPHP** | Persistent workers; 3–5× throughput over PHP-FPM |
 | PHP | **8.4+**, `declare(strict_types=1)` everywhere | Property hooks, asymmetric visibility, better enums |
-| Frontend | **Inertia v2 + Vue 3** (Composition API, `<script setup>`) | v2 adds deferred props, prefetching, polling — the features that made SPAs feel slow are largely solved |
+| Frontend | **Inertia v3 + Vue 3** (Composition API, `<script setup>`) | Deferred props, prefetching and polling ship in the box — the things that made SPAs feel slow are largely solved |
 | Types | **TypeScript strict** + `vue-tsc` in CI | Types generated from PHP DTOs via `typescript-transformer` |
 | Styling | **Tailwind CSS v4** + CSS custom properties | Drives the dark/light theming already in the prototype |
 | Build | **Vite 7** + code splitting per Inertia page | Only ship what the route needs |
@@ -231,7 +231,7 @@ Interactive pieces on Blade pages (cart drawer, wishlist toggle, image gallery, 
 | Observability | **Sentry** + **Laravel Pulse** + OpenTelemetry | Pulse gives slow queries and queue depth out of the box |
 
 ### Key packages
-`spatie/laravel-data` · `spatie/laravel-model-states` · `spatie/laravel-permission` · `spatie/laravel-medialibrary` · `spatie/laravel-activitylog` (audit trail) · `spatie/laravel-responsecache` · `spatie/laravel-sitemap` · `spatie/laravel-schema-org` (JSON-LD) · `laravel/scout` · `laravel/horizon` · `laravel/pulse` · `filament/filament` · `tightenco/ziggy` (routes in JS)
+`spatie/laravel-data` · `spatie/laravel-model-states` · `spatie/laravel-permission` · `spatie/laravel-medialibrary` · `spatie/laravel-activitylog` (audit trail) · `spatie/laravel-responsecache` · `spatie/laravel-sitemap` · `spatie/schema-org` (JSON-LD) · `laravel/scout` · `laravel/horizon` · `laravel/pulse` · `filament/filament` · `tightenco/ziggy` (routes in JS)
 
 **Deliberately not used:** a generic e-commerce package. Bagisto/Aimeos would give you 70% for free and then fight you on the other 30% — which is exactly the COD risk logic and courier reconciliation that makes or breaks this business. Same trap as WooCommerce plugins, one abstraction layer higher.
 
@@ -415,7 +415,7 @@ Roughly **six minutes** for a PR, twelve on main. Pre-commit hooks run Pint and 
 1. **Octane + FrankenPHP.** The framework boots once, not per request. Single biggest server-side win.
 2. **Full-page response cache with tags** on catalog pages, invalidated by `ProductPriceChanged` / `StockDepleted` events. Cloudflare holds the same response at the edge. A product page under normal conditions never reaches PHP.
 3. **Blade for catalog = no hydration cost.** Vue islands are a few KB each and load only where used.
-4. **Inertia v2 prefetching** on hover/viewport for cart, checkout and account — navigation feels instant.
+4. **Inertia v3 prefetching** on hover/viewport for cart, checkout and account — navigation feels instant.
 5. **Deferred props** for below-the-fold data (reviews, related products) so the main response ships immediately.
 6. **N+1 elimination enforced** — `preventLazyLoading` throws in dev and test, so N+1 queries are impossible to merge.
 7. **Query discipline** — indexes on every filter and sort column, cursor pagination, materialised views for heavy reports, `EXPLAIN ANALYZE` on anything over 50ms.
@@ -428,7 +428,7 @@ Roughly **six minutes** for a PR, twelve on main. Pre-commit hooks run Pint and 
 ## 10. SEO strategy
 
 - **Server-rendered HTML for everything indexable.** No JS execution required to see content.
-- **JSON-LD** via `spatie/laravel-schema-org`: `Product` (price, availability, rating, brand, GTIN), `BreadcrumbList`, `Organization`, `WebSite` + Sitelinks Search Box, `FAQPage`, `Review`.
+- **JSON-LD** via `spatie/schema-org`: `Product` (price, availability, rating, brand, GTIN), `BreadcrumbList`, `Organization`, `WebSite` + Sitelinks Search Box, `FAQPage`, `Review`.
 - **URL taxonomy:** `/c/{category}/{sub}`, `/p/{slug}`, facets as canonical-controlled query params. Faceted-navigation rules index the valuable combinations and `noindex,follow` the long tail to prevent index bloat.
 - **Canonicals, hreflang (en/ur), pagination** handled centrally in a Blade layout, not per-page.
 - **Auto-generated sitemaps** split by type, regenerated nightly and on significant change, auto-pinged.

@@ -28,7 +28,7 @@ final readonly class CodLimits
     public function highValueThresholdFor(bool $isFirstTimeCustomer): Money
     {
         return Money::fromPaisa(
-            intdiv($this->ceilingFor($isFirstTimeCustomer)->paisa, 2)
+            intdiv($this->ceilingFor($isFirstTimeCustomer)->paisa, 2),
         );
     }
 }

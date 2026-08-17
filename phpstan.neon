@@ -1,17 +1,30 @@
 includes:
     - vendor/larastan/larastan/extension.neon
+    # Registers Pest's Expectation/HigherOrderTapProxy as universal object crates
+    # so property access on them is not reported.
+    - vendor/pestphp/pest/extension.neon
 
 parameters:
     level: 8
+    # Tests are deliberately out of scope. Pest's DSL is built on __call and on
+    # `expect()->extend()` — arch chains and the custom `toBeMoney()` /
+    # `toBeRiskBand()` expectations in tests/Pest.php are invisible to static
+    # analysis, and the only ways to silence them are a baseline or ignore
+    # patterns broad enough to hide real bugs. The test suite is the gate for
+    # tests; PHPStan is the gate for the code under test.
     paths:
         - app
+        - config
         - database
         - routes
-        - tests
     excludePaths:
         - app/Filament/*
-    checkMissingIterableValueType: true
+    # Missing iterable value types are reported from level 6 upwards in PHPStan 2,
+    # so the old `checkMissingIterableValueType` toggle no longer exists.
     treatPhpDocTypesAsCertain: false
     ignoreErrors:
         # Eloquent magic that Larastan cannot infer without a full DB connection.
-        - '#Unsafe usage of new static#'
+        # No models exist yet, so this must not fail the build when unmatched.
+        -
+            message: '#Unsafe usage of new static#'
+            reportUnmatched: false

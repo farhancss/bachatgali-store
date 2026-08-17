@@ -24,14 +24,14 @@ final class HandleInertiaRequests extends Middleware
                 'user' => $request->user(),
             ],
             'store' => [
-                'currencySymbol'       => config('bachatgali.currency.symbol'),
-                'freeDeliveryFrom'     => config('bachatgali.delivery.free_threshold'),
-                'codOnly'              => true,
-                'supportWhatsApp'      => config('bachatgali.support.whatsapp'),
+                'currencySymbol' => config('bachatgali.currency.symbol'),
+                'freeDeliveryFrom' => config('bachatgali.delivery.free_threshold'),
+                'codOnly' => true,
+                'supportWhatsApp' => config('bachatgali.support.whatsapp'),
             ],
             'flash' => [
                 'success' => fn (): ?string => $request->session()->get('success'),
-                'error'   => fn (): ?string => $request->session()->get('error'),
+                'error' => fn (): ?string => $request->session()->get('error'),
             ],
         ];
     }

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-it('exposes a health endpoint for the load balancer', function () {
+it('exposes a health endpoint for the load balancer', function (): void {
     $this->get('/up')->assertOk();
 });
 

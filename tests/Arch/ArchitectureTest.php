@@ -72,8 +72,13 @@ arch('no debugging statements survive review')
     ->expect(['dd', 'dump', 'ray', 'var_dump', 'print_r'])
     ->not->toBeUsed();
 
+// The Laravel preset assumes the default flat `app/` layout — it wants every
+// enum under `App\Enums` and every throwable under `App\Exceptions`. This
+// project deliberately co-locates them with the bounded context that owns
+// them, so the preset is scoped to the framework-facing half of `app/`.
 arch('laravel preset')
-    ->preset()->laravel();
+    ->preset()->laravel()
+    ->ignoring('App\Domain');
 
 arch('security preset')
     ->preset()->security();

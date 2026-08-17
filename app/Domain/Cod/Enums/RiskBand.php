@@ -30,9 +30,9 @@ enum RiskBand: string
     {
         return match (true) {
             $score >= self::BLOCKED_THRESHOLD => self::Blocked,
-            $score >= self::HIGH_THRESHOLD    => self::High,
-            $score >= self::MEDIUM_THRESHOLD  => self::Medium,
-            default                           => self::Low,
+            $score >= self::HIGH_THRESHOLD => self::High,
+            $score >= self::MEDIUM_THRESHOLD => self::Medium,
+            default => self::Low,
         };
     }
 
@@ -50,9 +50,9 @@ enum RiskBand: string
     public function label(): string
     {
         return match ($this) {
-            self::Low     => 'Low risk',
-            self::Medium  => 'Medium risk',
-            self::High    => 'High risk — confirm by call',
+            self::Low => 'Low risk',
+            self::Medium => 'Medium risk',
+            self::High => 'High risk — confirm by call',
             self::Blocked => 'Blocked',
         };
     }
@@ -60,9 +60,9 @@ enum RiskBand: string
     public function colour(): string
     {
         return match ($this) {
-            self::Low     => 'success',
-            self::Medium  => 'warning',
-            self::High    => 'danger',
+            self::Low => 'success',
+            self::Medium => 'warning',
+            self::High => 'danger',
             self::Blocked => 'gray',
         };
     }

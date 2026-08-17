@@ -22,15 +22,21 @@ export default defineConfig({
     ],
     resolve: {
         alias: {
-            '@': resolve(__dirname, 'resources/js'),
+            '@': resolve(import.meta.dirname, 'resources/js'),
         },
     },
     build: {
-        // Keep the catalog pages lean: split every Inertia page into its own chunk.
+        // Keep the catalog pages lean: every Inertia page gets its own chunk, and the
+        // runtime everybody shares is hoisted into one long-lived `vendor` chunk.
+        // Rolldown (Vite 8) only accepts the function form of manualChunks.
         rollupOptions: {
             output: {
-                manualChunks: {
-                    vendor: ['vue', '@inertiajs/vue3'],
+                manualChunks(id: string) {
+                    if (/node_modules\/(vue|@vue|@inertiajs)\//.test(id)) {
+                        return 'vendor';
+                    }
+
+                    return undefined;
                 },
             },
         },

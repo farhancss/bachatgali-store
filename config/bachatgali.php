@@ -14,19 +14,19 @@ return [
     */
 
     'currency' => [
-        'code'   => env('STORE_CURRENCY', 'PKR'),
+        'code' => env('STORE_CURRENCY', 'PKR'),
         'symbol' => env('STORE_CURRENCY_SYMBOL', 'Rs.'),
     ],
 
     'delivery' => [
         'free_threshold' => (int) env('STORE_FREE_DELIVERY_THRESHOLD', 250_000),
-        'default_fee'    => 25_000,
-        'estimate_days'  => ['min' => 2, 'max' => 5],
+        'default_fee' => 25_000,
+        'estimate_days' => ['min' => 2, 'max' => 5],
     ],
 
     'support' => [
         'whatsapp' => env('STORE_SUPPORT_WHATSAPP'),
-        'hours'    => '9am – 11pm, every day',
+        'hours' => '9am – 11pm, every day',
     ],
 
     /*
@@ -38,12 +38,12 @@ return [
     */
 
     'cod' => [
-        'enabled'                 => (bool) env('COD_ENABLED', true),
-        'handling_fee'            => (int) env('COD_HANDLING_FEE', 0),
-        'max_order_value'         => (int) env('COD_MAX_ORDER_VALUE', 5_000_000),
-        'max_order_value_new'     => (int) env('COD_MAX_ORDER_VALUE_NEW_CUSTOMER', 1_500_000),
-        'require_otp'             => (bool) env('COD_REQUIRE_OTP', true),
-        'otp_ttl_seconds'         => (int) env('COD_OTP_TTL_SECONDS', 300),
+        'enabled' => (bool) env('COD_ENABLED', true),
+        'handling_fee' => (int) env('COD_HANDLING_FEE', 0),
+        'max_order_value' => (int) env('COD_MAX_ORDER_VALUE', 5_000_000),
+        'max_order_value_new' => (int) env('COD_MAX_ORDER_VALUE_NEW_CUSTOMER', 1_500_000),
+        'require_otp' => (bool) env('COD_REQUIRE_OTP', true),
+        'otp_ttl_seconds' => (int) env('COD_OTP_TTL_SECONDS', 300),
         'high_risk_requires_call' => (bool) env('COD_HIGH_RISK_REQUIRES_CALL', true),
 
         // Risk scoring weights. Retune these against real RTO data after
@@ -54,12 +54,12 @@ return [
         // as constants on RiskBand, because changing them changes what the
         // bands mean and should be reviewed alongside the tests.
         'risk_weights' => [
-            'previous_refusals'   => 60,   // cap across all refusals
-            'per_refusal'         => 25,   // points per prior refusal
+            'previous_refusals' => 60,   // cap across all refusals
+            'per_refusal' => 25,   // points per prior refusal
             'first_time_customer' => 15,
-            'high_order_value'    => 20,
-            'incomplete_address'  => 15,
-            'high_rto_city'       => 10,
+            'high_order_value' => 20,
+            'incomplete_address' => 15,
+            'high_rto_city' => 10,
         ],
     ],
 
