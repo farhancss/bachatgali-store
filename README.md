@@ -101,9 +101,11 @@ app/
 └── Providers/               contract → implementation bindings
 ```
 
-**The rule:** `Domain` may not reference `Http`, `Inertia` or a concrete gateway. Controllers may
-not touch Eloquent directly. Money is always an integer of paisa, never a float. All three are
-asserted by tests that run in five seconds.
+**The rule:** `Domain` may not reference `Http`, `Inertia`, a concrete gateway, or even the
+service container and `config()` helper — tunables are injected, which is what makes every Action
+a genuine unit test with no application boot. Controllers may not touch Eloquent directly. Money
+is always an integer of paisa, never a float. All of it is asserted by
+[architecture tests](tests/Arch/ArchitectureTest.php) that run in five seconds.
 
 ---
 

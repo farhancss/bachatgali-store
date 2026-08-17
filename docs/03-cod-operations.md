@@ -22,9 +22,15 @@ dispatched orders that come back undelivered. Every control below exists to move
 
 ### Risk bands
 
-Configured in `config/bachatgali.php`. Weights are deliberately data, not code — they will be
-retuned against real RTO figures after launch, and `tests/Unit/Cod/ScoreCodRiskTest.php` is
-table-driven so a retune tells you exactly which scenarios changed band.
+**Weights** live in `config/bachatgali.php` — they are data, and will be retuned against real RTO
+figures after launch. `tests/Unit/Cod/ScoreCodRiskTest.php` is table-driven, so a retune tells you
+exactly which scenarios changed band.
+
+**Thresholds** are constants on `RiskBand`, not configuration. Changing them changes what the
+bands *mean*, which should be a reviewed code change rather than an environment variable.
+
+Both are injected into `ScoreCodRisk` via `RiskWeights` and `CodLimits`, so the scorer itself has
+no dependency on the framework and is unit-tested without booting the application.
 
 | Band | Score | Behaviour |
 |---|---|---|

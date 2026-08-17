@@ -2,27 +2,40 @@
 
 declare(strict_types=1);
 
+use App\Domain\Cod\Enums\RiskBand;
+use App\Domain\Shared\ValueObjects\Money;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
-pest()->extend(TestCase::class)->in('Feature');
-pest()->extend(TestCase::class)->use(RefreshDatabase::class)->in('Feature/Database');
+/*
+|--------------------------------------------------------------------------
+| Test case binding
+|--------------------------------------------------------------------------
+| Feature tests get the application and a fresh database.
+|
+| Unit tests deliberately do NOT get the application: every class under
+| app/Domain is constructed directly with its dependencies. If a unit test
+| ever needs app() or config(), that is a signal the class under test has
+| picked up a framework dependency it should not have.
+*/
+
+pest()->extend(TestCase::class)->use(RefreshDatabase::class)->in('Feature');
 
 /*
 |--------------------------------------------------------------------------
-| Shared expectations
+| Expectations
 |--------------------------------------------------------------------------
 */
 
 expect()->extend('toBeMoney', function (int $paisa) {
     expect($this->value)
-        ->toBeInstanceOf(App\Domain\Shared\ValueObjects\Money::class)
+        ->toBeInstanceOf(Money::class)
         ->and($this->value->paisa)->toBe($paisa);
 
     return $this;
 });
 
-expect()->extend('toBeRiskBand', function (App\Domain\Cod\Enums\RiskBand $band) {
+expect()->extend('toBeRiskBand', function (RiskBand $band) {
     expect($this->value->band)->toBe($band);
 
     return $this;
@@ -34,7 +47,7 @@ expect()->extend('toBeRiskBand', function (App\Domain\Cod\Enums\RiskBand $band) 
 |--------------------------------------------------------------------------
 */
 
-function rupees(int $amount): App\Domain\Shared\ValueObjects\Money
+function rupees(int $amount): Money
 {
-    return App\Domain\Shared\ValueObjects\Money::fromRupees($amount);
+    return Money::fromRupees($amount);
 }

@@ -91,14 +91,15 @@ final readonly class Money implements JsonSerializable, Stringable
         return $this->paisa === $other->paisa;
     }
 
+    /** Whole rupees, thousands-separated. Integer arithmetic only. */
     public function toRupees(): string
     {
-        return number_format($this->paisa / 100, 0, '.', ',');
+        return number_format(intdiv($this->paisa, 100), 0, '.', ',');
     }
 
-    public function format(): string
+    public function format(string $symbol = 'Rs.'): string
     {
-        return config('bachatgali.currency.symbol').' '.$this->toRupees();
+        return $symbol.' '.$this->toRupees();
     }
 
     public function jsonSerialize(): int

@@ -23,6 +23,10 @@ arch('domain layer never depends on HTTP')
         'Illuminate\Support\Facades\Request',
     ]);
 
+arch('domain layer never reaches for the service container or config')
+    ->expect('App\Domain')
+    ->not->toUse(['app', 'config', 'resolve', 'request', 'session', 'auth']);
+
 arch('domain layer never depends on infrastructure implementations')
     ->expect('App\Domain')
     ->not->toUse([

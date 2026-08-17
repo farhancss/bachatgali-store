@@ -232,7 +232,8 @@ Bound in a service provider; the test suite swaps the real gateway for the fake 
 it('caps a percentage voucher at its maximum discount', function () {
     $voucher = Voucher::factory()->percentage(20)->maxDiscount(50_000)->make();
 
-    $result = app(ApplyVoucher::class)->handle($voucher, subtotal: 400_000);
+    // Constructed directly — unit tests never touch the container.
+    $result = (new ApplyVoucher)->handle($voucher, subtotal: 400_000);
 
     expect($result->discount)->toBe(50_000);   // 20% would be 80,000 — capped
 });
@@ -240,14 +241,14 @@ it('caps a percentage voucher at its maximum discount', function () {
 it('rejects a voucher below its minimum spend', function () {
     $voucher = Voucher::factory()->fixed(30_000)->minSpend(250_000)->make();
 
-    expect(fn () => app(ApplyVoucher::class)->handle($voucher, subtotal: 200_000))
+    expect(fn () => (new ApplyVoucher)->handle($voucher, subtotal: 200_000))
         ->toThrow(MinimumSpendNotMet::class);
 });
 
 it('never produces a negative total', function (int $subtotal, int $voucherValue) {
     $voucher = Voucher::factory()->fixed($voucherValue)->make();
 
-    $result = app(ApplyVoucher::class)->handle($voucher, $subtotal);
+    $result = (new ApplyVoucher)->handle($voucher, $subtotal);
 
     expect($result->total())->toBeGreaterThanOrEqual(0);
 })->with([

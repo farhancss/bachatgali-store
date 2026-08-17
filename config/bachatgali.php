@@ -46,21 +46,20 @@ return [
         'otp_ttl_seconds'         => (int) env('COD_OTP_TTL_SECONDS', 300),
         'high_risk_requires_call' => (bool) env('COD_HIGH_RISK_REQUIRES_CALL', true),
 
-        // Risk scoring weights. Tuned against real RTO data after launch —
-        // the table-driven tests in tests/Unit/Cod tell you what a change breaks.
+        // Risk scoring weights. Retune these against real RTO data after
+        // launch; tests/Unit/Cod/ScoreCodRiskTest is table-driven so a change
+        // tells you exactly which scenarios moved band.
+        //
+        // The band *thresholds* are deliberately not configurable — they live
+        // as constants on RiskBand, because changing them changes what the
+        // bands mean and should be reviewed alongside the tests.
         'risk_weights' => [
-            'previous_refusals'   => 60,
+            'previous_refusals'   => 60,   // cap across all refusals
+            'per_refusal'         => 25,   // points per prior refusal
             'first_time_customer' => 15,
             'high_order_value'    => 20,
             'incomplete_address'  => 15,
             'high_rto_city'       => 10,
-        ],
-
-        'risk_bands' => [
-            'low'    => 0,
-            'medium' => 30,
-            'high'   => 55,
-            'blocked' => 85,
         ],
     ],
 

@@ -4,27 +4,32 @@ declare(strict_types=1);
 
 namespace App\Domain\Cod\Actions;
 
+use App\Domain\Cod\DataObjects\CodLimits;
 use App\Domain\Cod\DataObjects\RiskAssessment;
+use App\Domain\Cod\DataObjects\RiskWeights;
 use App\Domain\Shared\Enums\City;
 use App\Domain\Shared\ValueObjects\Money;
 
 /**
- * Scores the RTO (return to origin) risk of a cash-on-delivery order.
+ * Scores the RTO (return-to-origin) risk of a cash-on-delivery order.
  *
- * This is the highest-leverage code in the platform: RTO is the single
- * largest source of loss in a COD business, and this action is what stands
- * between a bad order and a courier collecting it.
+ * This is the highest-leverage code in the platform: RTO is the largest
+ * source of loss in a COD business, and this action stands between a bad
+ * order and a courier collecting it.
  *
- * Weights live in config/bachatgali.php so they can be tuned against real
- * data after launch without touching code. tests/Unit/Cod/ScoreCodRiskTest
- * is table-driven, so retuning tells you exactly what behaviour changed.
+ * Weights and limits are injected (bound from config in DomainServiceProvider)
+ * so this class has zero framework dependencies — no container, no config
+ * helper, no database. That is what makes it a genuine unit test.
  *
- * This is the worked vertical slice for the whole codebase — a single
- * public `handle()`, no framework dependencies beyond config, fully
- * unit-testable with no database.
+ * This is the reference implementation for every Action in the codebase.
  */
 final readonly class ScoreCodRisk
 {
+    public function __construct(
+        private RiskWeights $weights,
+        private CodLimits $limits,
+    ) {}
+
     public function handle(
         Money $orderValue,
         City $city,
@@ -32,43 +37,30 @@ final readonly class ScoreCodRisk
         bool $isFirstTimeCustomer = true,
         bool $addressLooksIncomplete = false,
     ): RiskAssessment {
-        /** @var array<string, int> $weights */
-        $weights = config('bachatgali.cod.risk_weights');
+        $isHighValue = $orderValue->isGreaterThanOrEqualTo(
+            $this->limits->highValueThresholdFor($isFirstTimeCustomer)
+        );
 
-        $factors = [
+        return RiskAssessment::fromFactors([
             'previous_refusals' => $previousRefusals > 0
-                ? min($weights['previous_refusals'], $previousRefusals * 25)
+                ? min($this->weights->previousRefusals, $previousRefusals * $this->weights->perRefusal)
                 : 0,
 
             'first_time_customer' => $isFirstTimeCustomer
-                ? $weights['first_time_customer']
+                ? $this->weights->firstTimeCustomer
                 : 0,
 
-            'high_order_value' => $this->isHighValue($orderValue, $isFirstTimeCustomer)
-                ? $weights['high_order_value']
+            'high_order_value' => $isHighValue
+                ? $this->weights->highOrderValue
                 : 0,
 
             'incomplete_address' => $addressLooksIncomplete
-                ? $weights['incomplete_address']
+                ? $this->weights->incompleteAddress
                 : 0,
 
             'high_rto_city' => $city->isHighRtoRisk()
-                ? $weights['high_rto_city']
+                ? $this->weights->highRtoCity
                 : 0,
-        ];
-
-        return RiskAssessment::fromFactors($factors);
-    }
-
-    private function isHighValue(Money $orderValue, bool $isFirstTimeCustomer): bool
-    {
-        $ceiling = Money::fromPaisa((int) ($isFirstTimeCustomer
-            ? config('bachatgali.cod.max_order_value_new')
-            : config('bachatgali.cod.max_order_value')));
-
-        // "High value" starts at half the applicable ceiling.
-        return $orderValue->isGreaterThanOrEqualTo(
-            Money::fromPaisa(intdiv($ceiling->paisa, 2))
-        );
+        ]);
     }
 }
