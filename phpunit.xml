@@ -28,8 +28,14 @@
         <env name="APP_MAINTENANCE_DRIVER" value="file"/>
         <env name="BCRYPT_ROUNDS" value="4"/>
         <env name="CACHE_STORE" value="array"/>
-        <env name="DB_CONNECTION" value="pgsql"/>
-        <env name="DB_DATABASE" value="bachatgali_test"/>
+        <!--
+            SQLite in memory: the suite needs no database service, locally or
+            in CI, and RefreshDatabase costs nothing. Production is PostgreSQL
+            17 — once phase 1 adds migrations that use PG-specific types, add a
+            job that runs the suite against real Postgres too.
+        -->
+        <env name="DB_CONNECTION" value="sqlite"/>
+        <env name="DB_DATABASE" value=":memory:"/>
         <env name="MAIL_MAILER" value="array"/>
         <env name="QUEUE_CONNECTION" value="sync"/>
         <env name="SESSION_DRIVER" value="array"/>

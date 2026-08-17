@@ -30,14 +30,15 @@ npm run dev
 ## Running without Docker
 
 If you already have PostgreSQL 17 and Redis on the host, the containers are
-optional. Create the role and databases once (the second one is what
-`phpunit.xml` points the suite at):
+optional. Create the role and database once:
 
 ```bash
 createuser bachatgali --createdb --pwprompt
 createdb --owner=bachatgali bachatgali
-createdb --owner=bachatgali bachatgali_test
 ```
+
+Nothing is needed for the tests — `phpunit.xml` pins the suite to SQLite in
+memory, so `composer test` runs with no database server at all.
 
 Then serve the app with the built-in server instead of Octane:
 

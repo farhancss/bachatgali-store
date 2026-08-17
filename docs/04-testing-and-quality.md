@@ -9,8 +9,14 @@ afternoon and know within four minutes whether you broke checkout.**
 
 | Layer | Tool | Covers | Runtime |
 |---|---|---|---|
-| **Unit** | Pest 4 | Actions, calculators, state machines, risk scoring, voucher rules, `Money`. No DB, no HTTP | < 15s |
+| **Unit** | Pest 5 | Actions, calculators, state machines, risk scoring, voucher rules, `Money`. No DB, no HTTP | < 15s |
 | **Feature** | Pest + `RefreshDatabase` | Full request → response through real routes, middleware and database | ~90s |
+
+The suite runs against **SQLite in memory** (`phpunit.xml`), so neither a
+developer nor CI needs a database service to run `composer check`. Production
+is PostgreSQL 17: once phase 1 lands migrations that use PG-specific types,
+add a scheduled job that runs the same suite against real Postgres, so the
+speed of SQLite never becomes a reason to miss a dialect bug.
 | **Integration** | Pest + fakes | Courier booking, SMS, search indexing, remittance import — against `Fake` gateways and recorded fixtures | ~30s |
 | **Browser** | Pest browser plugin | Checkout end-to-end, cart drawer, filters, admin order flow | ~4min |
 | **Architecture** | Pest arch presets | Structural rules — see below | < 5s |

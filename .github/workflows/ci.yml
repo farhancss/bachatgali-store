@@ -66,23 +66,10 @@ jobs:
     name: Tests
     runs-on: ubuntu-latest
 
-    services:
-      postgres:
-        image: postgres:17-alpine
-        env:
-          POSTGRES_DB: bachatgali_test
-          POSTGRES_USER: bachatgali
-          POSTGRES_PASSWORD: secret
-        ports: ['5432:5432']
-        options: >-
-          --health-cmd="pg_isready -U bachatgali"
-          --health-interval=5s --health-retries=10
-      redis:
-        image: redis:7-alpine
-        ports: ['6379:6379']
-        options: >-
-          --health-cmd="redis-cli ping"
-          --health-interval=5s --health-retries=10
+    # No service containers: phpunit.xml pins the suite to SQLite in memory,
+    # with array cache/session and a sync queue, so nothing reaches out to
+    # Postgres or Redis. Keep it that way — a job that needs a service is a
+    # job the mutation run cannot share.
 
     steps:
       - uses: actions/checkout@v4
@@ -100,9 +87,6 @@ jobs:
 
       - name: Test suite with coverage
         run: composer run test:cov
-        env:
-          DB_HOST: 127.0.0.1
-          REDIS_HOST: 127.0.0.1
 
       - name: Type coverage
         run: composer run test:type

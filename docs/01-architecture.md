@@ -302,7 +302,7 @@ The target is not a coverage number. It's this: **you can change the pricing eng
 
 | Layer | Tool | What it covers | Count (est.) | Runtime |
 |---|---|---|---|---|
-| **Unit** | Pest 4 | Actions, calculators, state machines, risk scoring, voucher rules, `Money`. No DB, no HTTP | ~450 | < 15s |
+| **Unit** | Pest 5 | Actions, calculators, state machines, risk scoring, voucher rules, `Money`. No DB, no HTTP | ~450 | < 15s |
 | **Feature / HTTP** | Pest + `RefreshDatabase` | Full request → response through real routes, middleware, DB. The bulk of the suite | ~320 | ~90s |
 | **Integration** | Pest + fake gateways | Courier booking, SMS, search indexing, remittance import — against Fakes and recorded fixtures | ~70 | ~30s |
 | **Browser** | Pest v4 browser testing | Checkout end-to-end, cart drawer, filters, admin order flow. Real browser, real JS | ~25 | ~4min |
