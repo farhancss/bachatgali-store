@@ -53,7 +53,12 @@ arch('value objects are final and readonly')
     ->toBeReadonly();
 
 arch('no floating point arithmetic anywhere near money')
-    ->expect(['App\Domain\Pricing', 'App\Domain\Cod', 'App\Domain\Shared\ValueObjects'])
+    ->expect([
+        'App\Domain\Pricing',
+        'App\Domain\Cod',
+        'App\Domain\Catalog',
+        'App\Domain\Shared\ValueObjects',
+    ])
     ->not->toUse(['floatval', 'round', 'floor', 'ceil']);
 
 arch('enums are string backed so they survive a database round trip')
@@ -78,7 +83,13 @@ arch('no debugging statements survive review')
 // them, so the preset is scoped to the framework-facing half of `app/`.
 arch('laravel preset')
     ->preset()->laravel()
-    ->ignoring('App\Domain');
+    ->ignoring([
+        'App\Domain',
+        // Filament names panel providers `<Name>PanelProvider`, not
+        // `...ServiceProvider`. That is the framework's own convention and
+        // every generated panel would trip this rule.
+        'App\Providers\Filament',
+    ]);
 
 arch('security preset')
     ->preset()->security();

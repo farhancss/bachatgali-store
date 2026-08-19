@@ -2,8 +2,10 @@
 
 declare(strict_types=1);
 
-use Illuminate\Contracts\View\Factory;
-use Illuminate\Contracts\View\View;
+use App\Http\Controllers\Catalog\CategoryController;
+use App\Http\Controllers\Catalog\HomeController;
+use App\Http\Controllers\Catalog\ProductController;
+use App\Http\Controllers\Catalog\SearchController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -19,12 +21,12 @@ use Illuminate\Support\Facades\Route;
 | taxonomy now so the 301 map from WooCommerce can be written against it.
 */
 
-Route::get('/', fn (): Factory|View => view('catalog.home'))->name('home');
+Route::get('/', HomeController::class)->name('home');
 
 // ── Catalog (Blade, cached) ───────────────────────────────────
-// Route::get('/c/{category:slug}',           CategoryController::class)->name('category');
-// Route::get('/p/{product:slug}',            ProductController::class)->name('product');
-// Route::get('/search',                      SearchController::class)->name('search');
+Route::get('/search', SearchController::class)->name('search');
+Route::get('/c/{category:slug}', CategoryController::class)->name('category');
+Route::get('/p/{product:slug}', ProductController::class)->name('product');
 
 // ── Shop (Inertia) ────────────────────────────────────────────
 // Route::get('/cart',                        CartController::class)->name('cart');

@@ -1,5 +1,6 @@
 @import 'tailwindcss';
 @import './tokens.css';
+@import './components.css';
 
 /* Storefront base. Component styles live with their components. */
 @layer base {

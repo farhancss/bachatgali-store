@@ -10,14 +10,11 @@ final class DatabaseSeeder extends Seeder
 {
     public function run(): void
     {
-        // A realistic demo catalog lands in phase 1 so local development and
-        // staging both have something meaningful to browse.
-        //
-        // $this->call([
-        //     CategorySeeder::class,
-        //     BrandSeeder::class,
-        //     ProductSeeder::class,
-        //     DemoOrderSeeder::class,
-        // ]);
+        // A realistic demo catalog so local development and staging both have
+        // something meaningful to browse. Orders arrive with phase 3.
+        $this->call([
+            StaffSeeder::class,
+            CatalogSeeder::class,
+        ]);
     }
 }
