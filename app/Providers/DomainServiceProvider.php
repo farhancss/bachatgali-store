@@ -9,8 +9,12 @@ use App\Domain\Cod\DataObjects\RiskWeights;
 use App\Domain\Shared\ValueObjects\Money;
 use App\Infrastructure\Courier\Contracts\CourierGateway;
 use App\Infrastructure\Courier\Fake\FakeCourierGateway;
+use App\Infrastructure\Search\Contracts\SearchEngine;
+use App\Infrastructure\Search\Fake\FakeSearchEngine;
+use App\Infrastructure\Search\Typesense\TypesenseSearchEngine;
 use Illuminate\Support\ServiceProvider;
 use InvalidArgumentException;
+use Psr\Log\LoggerInterface;
 
 /**
  * Binds domain contracts and tunables to concrete values.
@@ -23,6 +27,7 @@ final class DomainServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->bindCourier();
+        $this->bindSearch();
         $this->bindCodTunables();
     }
 
@@ -39,6 +44,27 @@ final class DomainServiceProvider extends ServiceProvider
                 default => throw new InvalidArgumentException(
                     "Unknown courier driver [{$driver}].",
                 ),
+            };
+        });
+    }
+
+    private function bindSearch(): void
+    {
+        $this->app->singleton(SearchEngine::class, function (): SearchEngine {
+            /** @var string $driver */
+            $driver = config('scout.driver', 'database');
+
+            $database = new FakeSearchEngine;
+
+            return match ($driver) {
+                // Typesense wraps the database engine rather than replacing
+                // it: if search is down the storefront degrades instead of
+                // erroring. See TypesenseSearchEngine.
+                'typesense' => new TypesenseSearchEngine(
+                    $database,
+                    $this->app->make(LoggerInterface::class),
+                ),
+                default => $database,
             };
         });
     }
