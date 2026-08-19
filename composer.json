@@ -1,8 +1,13 @@
 {
     "name": "bachatgali/store",
     "type": "project",
-    "description": "Bachat Gali — cash-on-delivery commerce platform (Laravel 13 + Inertia + Vue 3).",
-    "keywords": ["ecommerce", "laravel", "inertia", "cash-on-delivery"],
+    "description": "Bachat Gali \u2014 cash-on-delivery commerce platform (Laravel 13 + Inertia + Vue 3).",
+    "keywords": [
+        "ecommerce",
+        "laravel",
+        "inertia",
+        "cash-on-delivery"
+    ],
     "license": "proprietary",
     "require": {
         "php": "^8.4",
@@ -54,7 +59,8 @@
     },
     "scripts": {
         "post-autoload-dump": [
-            "@php artisan package:discover --ansi"
+            "@php artisan package:discover --ansi",
+            "@php artisan filament:upgrade"
         ],
         "lint": "pint --test",
         "fix": "pint",

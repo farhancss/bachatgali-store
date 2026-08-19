@@ -1,0 +1,85 @@
+@import '../../../../vendor/filament/filament/resources/css/theme.css';
+
+@source '../../../../app/Filament/**/*';
+@source '../../../../resources/views/filament/**/*';
+
+/* ==========================================================================
+   Admin theme — the storefront's design language, applied to the panel.
+
+   Scope, deliberately: SHAPE and TYPOGRAPHY only. No background, surface or
+   text colours live here.
+
+   Why: Filament signals dark mode with `html.dark`, while the storefront's
+   tokens.css keys off `[data-theme]`. Importing those tokens here meant a
+   dark panel rendered on a light background — two theming systems, each
+   half-applied. Colour is therefore owned in exactly one place: the panel
+   provider's ->colors(), which reads config('brand.theme'). Rebranding still
+   moves both apps at once, and dark mode keeps working.
+
+   What carries the storefront's character across is its geometry: the same
+   corner radii, the same 640-weight buttons, the same uppercase table heads.
+   ========================================================================== */
+
+:root {
+    --bg-radius-lg: 14px;
+    --bg-radius-xl: 20px;
+    --bg-font-weight-strong: 640;
+}
+
+.fi-body {
+    font-family:
+        -apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Roboto,
+        'Helvetica Neue', Arial, sans-serif;
+}
+
+/* Cards, tables and panels share the storefront's corner language. */
+.fi-section,
+.fi-ta-ctn,
+.fi-wi-stats-overview-stat,
+.fi-modal-window {
+    border-radius: var(--bg-radius-lg);
+}
+
+/* Table headers read as labels, exactly like the storefront's `.tiny` caps. */
+.fi-ta-header-cell {
+    font-size: 0.72rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+}
+
+/* Buttons carry the storefront's weight and radius. */
+.fi-btn {
+    border-radius: 10px;
+    font-weight: var(--bg-font-weight-strong);
+}
+
+.fi-input,
+.fi-select-input,
+.fi-fo-field-wrp-input {
+    border-radius: 10px;
+}
+
+/* Pills, not rounded rectangles — matches the storefront's badges. */
+.fi-badge {
+    border-radius: 999px;
+    font-weight: 620;
+}
+
+/* Money and counts must line up down a column. */
+.fi-ta-record-content .fi-ta-text,
+.fi-wi-stats-overview-stat-value {
+    font-variant-numeric: tabular-nums;
+}
+
+.fi-sidebar-nav-item-label {
+    font-weight: 560;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.001ms !important;
+        transition-duration: 0.001ms !important;
+    }
+}
