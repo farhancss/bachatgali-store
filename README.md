@@ -132,7 +132,8 @@ is always an integer of paisa, never a float. All of it is asserted by
 - Side effects go in event listeners, never inline in an Action
 - Every external service sits behind an interface with a `Fake` implementation
 - Conventional commits (`feat:`, `fix:`, `chore:`, `docs:`, `test:`)
-- Branches: `main` (production) · `develop` (integration) · `feat/*`, `fix/*`
+- Branches: `main` (production) · `master` (current release) · `feat/*`, `fix/*`
+- Flow: branch from `master` per feature, merge back into `master` when complete; `master` merges into `main` to release
 
 ---
 
