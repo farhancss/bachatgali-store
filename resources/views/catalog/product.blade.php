@@ -29,6 +29,12 @@
 @push('schema')
     {{-- JSON-LD: the single most valuable thing on this page for search. --}}
     <script type="application/ld+json">{!! json_encode($schema, JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR) !!}</script>
+
+    <x-catalog.breadcrumb-schema :crumbs="array_merge(
+        [['name' => 'Home', 'url' => route('home')]],
+        $product->categories->map(fn ($c) => ['name' => $c->name, 'url' => route('category', $c)])->all(),
+        [['name' => $product->name, 'url' => route('product', $product)]],
+    )" />
 @endpush
 
 @section('content')

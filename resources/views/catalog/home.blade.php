@@ -3,6 +3,10 @@
 @section('title', config('brand.name') . ' — ' . config('brand.tagline'))
 @section('description', config('brand.tagline'))
 
+@push('schema')
+    <x-catalog.organization-schema />
+@endpush
+
 @section('content')
     <div class="wrap">
         @if ($categories->isNotEmpty())
