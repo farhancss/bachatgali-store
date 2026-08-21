@@ -122,3 +122,36 @@ it('soft deletes so historical orders keep resolving', function (): void {
 it('routes by slug', function (): void {
     expect(Product::factory()->create()->getRouteKeyName())->toBe('slug');
 });
+
+it('opens on the requested variant when one is asked for', function (): void {
+    $product = Product::factory()->withVariants(3)->create()->load('variants');
+    $wanted = $product->variants->last();
+
+    $this->withoutVite()
+        ->get(route('product', $product).'?variant='.$wanted?->id)
+        ->assertOk()
+        ->assertSee($wanted?->sku, escape: false);
+});
+
+it('ignores a variant belonging to a different product', function (): void {
+    // Without this check a crafted ?variant= would render another product's
+    // price and SKU under this product's name — and the JSON-LD would
+    // publish it to Google.
+    $product = Product::factory()->create()->load('variants');
+    $foreign = ProductVariant::factory()->create();
+
+    $this->withoutVite()
+        ->get(route('product', $product).'?variant='.$foreign->id)
+        ->assertOk()
+        ->assertSee($product->defaultVariant()?->sku, escape: false)
+        ->assertDontSee($foreign->sku, escape: false);
+});
+
+it('ignores a nonsense variant parameter', function (string $value): void {
+    $product = Product::factory()->create()->load('variants');
+
+    $this->withoutVite()
+        ->get(route('product', $product).'?variant='.$value)
+        ->assertOk()
+        ->assertSee($product->defaultVariant()?->sku, escape: false);
+})->with(['abc', '-1', '0', '999999']);

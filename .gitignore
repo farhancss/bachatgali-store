@@ -27,3 +27,4 @@ yarn-error.log
 /.zed
 .DS_Store
 /coverage
+/public/sitemap.xml

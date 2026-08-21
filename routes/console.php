@@ -12,3 +12,10 @@ declare(strict_types=1);
 // Schedule::command('cod:report-cash-in-transit')->dailyAt('09:00');
 // Schedule::command('catalog:regenerate-sitemap')->dailyAt('03:00');
 // Schedule::command('flash-sale:roll-back-expired')->everyMinute();
+
+use Illuminate\Support\Facades\Schedule;
+
+// Rebuilt nightly rather than on every catalog write: crawlers re-read it on
+// their own cadence, and regenerating per save would rewrite the file
+// hundreds of times during a bulk import for no benefit.
+Schedule::command('sitemap:generate')->dailyAt('03:30')->withoutOverlapping();

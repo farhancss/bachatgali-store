@@ -4,6 +4,13 @@
 @section('description', $category->description ?? 'Shop ' . $category->name . ' with cash on delivery across Pakistan.')
 @section('canonical', route('category', $category))
 
+@push('schema')
+    <x-catalog.breadcrumb-schema :crumbs="[
+        ['name' => 'Home', 'url' => route('home')],
+        ['name' => $category->name, 'url' => route('category', $category)],
+    ]" />
+@endpush
+
 @section('content')
     <div class="wrap">
         <nav class="crumb" aria-label="Breadcrumb">

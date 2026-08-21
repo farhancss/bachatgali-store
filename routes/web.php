@@ -7,6 +7,7 @@ use App\Http\Controllers\Catalog\HomeController;
 use App\Http\Controllers\Catalog\ProductController;
 use App\Http\Controllers\Catalog\SearchController;
 use Illuminate\Support\Facades\Route;
+use Spatie\ResponseCache\Middlewares\CacheResponse;
 
 /*
 |--------------------------------------------------------------------------
@@ -21,12 +22,17 @@ use Illuminate\Support\Facades\Route;
 | taxonomy now so the 301 map from WooCommerce can be written against it.
 */
 
-Route::get('/', HomeController::class)->name('home');
+// ── Catalog (Blade, edge-cacheable) ───────────────────────────
+// CacheResponse only stores what CatalogPages allows: guest GETs on these
+// three route names. Search is deliberately outside the cached group — its
+// responses vary by query string and go stale immediately.
+Route::middleware(CacheResponse::class)->group(function (): void {
+    Route::get('/', HomeController::class)->name('home');
+    Route::get('/c/{category:slug}', CategoryController::class)->name('category');
+    Route::get('/p/{product:slug}', ProductController::class)->name('product');
+});
 
-// ── Catalog (Blade, cached) ───────────────────────────────────
 Route::get('/search', SearchController::class)->name('search');
-Route::get('/c/{category:slug}', CategoryController::class)->name('category');
-Route::get('/p/{product:slug}', ProductController::class)->name('product');
 
 // ── Shop (Inertia) ────────────────────────────────────────────
 // Route::get('/cart',                        CartController::class)->name('cart');

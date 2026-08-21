@@ -40,6 +40,12 @@
         <env name="QUEUE_CONNECTION" value="sync"/>
         <env name="SESSION_DRIVER" value="array"/>
         <env name="SCOUT_DRIVER" value="null"/>
+        <!--
+            Full-page caching off in tests. Left on, one test's rendered HTML
+            is served to the next, and the failure looks like a bug in the
+            code under test rather than in the harness.
+        -->
+        <env name="RESPONSE_CACHE_ENABLED" value="false"/>
         <env name="TELESCOPE_ENABLED" value="false"/>
     </php>
 </phpunit>
