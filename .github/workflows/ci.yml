@@ -91,6 +91,49 @@ jobs:
       - name: Type coverage
         run: composer run test:type
 
+  # The fast suite runs on SQLite so no PR needs a service container. That
+  # speed has a cost: SQLite's LIKE is case-insensitive and PostgreSQL's is
+  # not, which once let a broken product search ship with a green build.
+  # This job runs the same suite against the real engine on the long-lived
+  # branches, where a slower check is worth the dialect coverage.
+  tests-postgres:
+    name: Tests (PostgreSQL)
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
+
+    services:
+      postgres:
+        image: postgres:17-alpine
+        env:
+          POSTGRES_DB: bachatgali_test
+          POSTGRES_USER: bachatgali
+          POSTGRES_PASSWORD: secret
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd="pg_isready -U bachatgali"
+          --health-interval=5s --health-retries=10
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ env.PHP_VERSION }}
+          coverage: none
+
+      - run: composer install --prefer-dist --no-interaction --no-progress
+      - run: cp .env.example .env && php artisan key:generate
+
+      - name: Test suite against PostgreSQL 17
+        run: vendor/bin/pest
+        env:
+          DB_CONNECTION: pgsql
+          DB_HOST: 127.0.0.1
+          DB_PORT: 5432
+          DB_DATABASE: bachatgali_test
+          DB_USERNAME: bachatgali
+          DB_PASSWORD: secret
+
   mutation:
     name: Mutation testing (money-critical)
     runs-on: ubuntu-latest
