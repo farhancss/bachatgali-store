@@ -6,6 +6,7 @@ namespace App\Providers;
 
 use App\Domain\Cod\DataObjects\CodLimits;
 use App\Domain\Cod\DataObjects\RiskWeights;
+use App\Domain\Pricing\DataObjects\DeliveryRules;
 use App\Domain\Shared\ValueObjects\Money;
 use App\Infrastructure\Courier\Contracts\CourierGateway;
 use App\Infrastructure\Courier\Fake\FakeCourierGateway;
@@ -29,6 +30,7 @@ final class DomainServiceProvider extends ServiceProvider
         $this->bindCourier();
         $this->bindSearch();
         $this->bindCodTunables();
+        $this->bindPricingRules();
     }
 
     private function bindCourier(): void
@@ -67,6 +69,21 @@ final class DomainServiceProvider extends ServiceProvider
                 default => $database,
             };
         });
+    }
+
+    private function bindPricingRules(): void
+    {
+        $this->app->singleton(DeliveryRules::class, fn (): DeliveryRules => new DeliveryRules(
+            freeDeliveryThreshold: Money::fromPaisa(
+                (int) config('bachatgali.delivery.free_threshold', 250_000),
+            ),
+            standardFee: Money::fromPaisa(
+                (int) config('bachatgali.delivery.default_fee', 25_000),
+            ),
+            codHandlingFee: Money::fromPaisa(
+                (int) config('bachatgali.cod.handling_fee', 0),
+            ),
+        ));
     }
 
     private function bindCodTunables(): void
