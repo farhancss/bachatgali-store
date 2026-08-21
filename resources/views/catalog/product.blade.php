@@ -101,9 +101,14 @@
                     {{ $variant?->stockState()->label() }}
                 </p>
 
-                <button class="btn btn-a btn-lg" @disabled(! $variant?->stockState()->isPurchasable())>
-                    {{ $variant?->stockState()->isPurchasable() ? 'Add to cart' : 'Out of stock' }}
-                </button>
+                <form method="post" action="{{ route('cart.store') }}">
+                    @csrf
+                    <input type="hidden" name="variant_id" value="{{ $variant?->id }}">
+                    <input type="hidden" name="quantity" value="1">
+                    <button class="btn btn-a btn-lg" @disabled(! $variant?->stockState()->isPurchasable())>
+                        {{ $variant?->stockState()->isPurchasable() ? 'Add to cart' : 'Out of stock' }}
+                    </button>
+                </form>
 
                 <div class="codbox">
                     <strong>Cash on delivery</strong>
